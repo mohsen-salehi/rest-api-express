@@ -12,7 +12,11 @@ const createUser = async (req, res) => {
   try {
     const hashedPassword = await hashPassword(password);
     const user = await User.create({ email, password: hashedPassword });
-    res.status(201).json(user);
+    const token = generateToken(user.id, user.email);
+    res.status(201).json({
+      ...user,
+      token,
+    });
   } catch (error) {
     res.status(500).json({ message: "Error creating user", error });
   }
